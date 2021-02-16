@@ -77,9 +77,7 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 		return nil, err
 	}
 	t.Stop()
-	for key, val := range inputVars {
-		debug.Log("%s%s", key, val)
-	}
+
 	debug.Log("Loading module metadata...")
 	t = timer.Start(timer.DiskIO)
 	modulesMetadata, _ := LoadModuleMetadata(parser.fullPath)
