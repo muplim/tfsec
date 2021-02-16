@@ -70,6 +70,16 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	}
 	t.Stop()
 
+	debug.Log("Loading environment variables...")
+	t = timer.Start(timer.DiskIO)
+	inputVars, err = LoadEnvVars(inputVars)
+	if err != nil {
+		return nil, err
+	}
+	t.Stop()
+	for key, val := range inputVars {
+		debug.Log("%s%s", key, val)
+	}
 	debug.Log("Loading module metadata...")
 	t = timer.Start(timer.DiskIO)
 	modulesMetadata, _ := LoadModuleMetadata(parser.fullPath)
