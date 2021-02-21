@@ -83,8 +83,8 @@ func loadModule(block *Block, projectBasePath string, metadata *ModulesMetadata)
 		if !strings.HasPrefix(source, "./") && !strings.HasPrefix(source, "../") {
 			return nil, fmt.Errorf("missing module with source '%s' -  try to 'terraform init' first", source)
 		}
-
-		modulePath = filepath.Join(projectBasePath, source)
+		debug.Log(projectBasePath)
+		modulePath = reconstructPath(projectBasePath, source)
 	}
 
 	blocks := Blocks{}
@@ -100,6 +100,16 @@ func loadModule(block *Block, projectBasePath string, metadata *ModulesMetadata)
 		Definition: block,
 		Blocks:     blocks,
 	}, nil
+}
+
+func reconstructPath(projectBasePath string, source string) string {
+
+	// get the parent directory until we reach the shared parent directory
+	for strings.HasPrefix(source, "../") {
+		projectBasePath = filepath.Dir(projectBasePath)
+		source = strings.TrimPrefix(source, "../")
+	}
+	return filepath.Join(projectBasePath, source)
 }
 
 func getModuleBlocks(block *Block, modulePath string, blocks *Blocks) error {
