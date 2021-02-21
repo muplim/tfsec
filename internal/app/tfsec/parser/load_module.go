@@ -83,7 +83,7 @@ func loadModule(block *Block, projectBasePath string, metadata *ModulesMetadata)
 		if !strings.HasPrefix(source, "./") && !strings.HasPrefix(source, "../") {
 			return nil, fmt.Errorf("missing module with source '%s' -  try to 'terraform init' first", source)
 		}
-		debug.Log(projectBasePath)
+
 		modulePath = reconstructPath(projectBasePath, source)
 	}
 
