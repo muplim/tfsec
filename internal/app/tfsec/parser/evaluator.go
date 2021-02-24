@@ -87,8 +87,9 @@ func (e *Evaluator) evaluateModules() {
 		}
 		evalTime.Stop()
 
-		childModules := LoadModules(module.Blocks, module.Path, e.moduleMetadata)
-		moduleEvaluator := NewEvaluator(module.Path, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules)
+		childModules := LoadModules(module.Blocks, e.projectRootPath, e.moduleMetadata)
+		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules)
+		e.SetModuleBasePath(e.projectRootPath)
 		b, _ := moduleEvaluator.EvaluateAll()
 		e.blocks = append(e.blocks, b...)
 
