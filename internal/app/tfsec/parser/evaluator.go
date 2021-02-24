@@ -91,7 +91,6 @@ func (e *Evaluator) evaluateModules() {
 		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules)
 		b, _ := moduleEvaluator.EvaluateAll()
 		e.blocks = append(e.blocks, b...)
-
 		evalTime = timer.Start(timer.Evaluation)
 		// export module outputs
 		moduleMapRaw := e.ctx.Variables["module"]

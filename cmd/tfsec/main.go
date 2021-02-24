@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/tfsec/tfsec/internal/app/tfsec/config"
+	"log"
 	"os"
 	"path/filepath"
 	"runtime"
+	"runtime/pprof"
 	"strings"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/custom"
@@ -37,6 +39,7 @@ var tfsecConfig = &config.Config{}
 var conciseOutput = false
 var excludeDownloaded = false
 var detailedExitCode = false
+var memprofile string
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
@@ -53,6 +56,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&conciseOutput, "concise-output", conciseOutput, "Reduce the amount of output and no statistics")
 	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 	rootCmd.Flags().BoolVar(&detailedExitCode, "detailed-exit-code", detailedExitCode, "Produce more detailed exit status codes.")
+	rootCmd.Flags().StringVar(&memprofile, "memprofile", memprofile, "")
 }
 
 func main() {
@@ -186,7 +190,17 @@ var rootCmd = &cobra.Command{
 		if allInfo(results)  {
 			os.Exit(0)
 		}
-
+		if memprofile != "" {
+			f, err := os.Create(memprofile)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer f.Close()
+			runtime.GC()
+			if err := pprof.WriteHeapProfile(f); err != nil {
+				log.Fatal("could not write memory profile: ", err)
+			}
+		}
 		os.Exit(1)
 	},
 }
