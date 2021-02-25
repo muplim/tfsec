@@ -102,6 +102,8 @@ func loadModule(block *Block, projectBasePath string, metadata *ModulesMetadata)
 	}, nil
 }
 
+// This function takes the relative source path provided by `source` and reconstructs the absolute path
+// based on the project base path and the relative source path
 func reconstructPath(projectBasePath string, source string) string {
 
 	// get the parent directory until we reach the shared parent directory
